@@ -1,0 +1,20 @@
+{
+  "name": "zomato-restaurant-recommender",
+  "version": "1.0.0",
+  "description": "AI-Powered Restaurant Recommendation System",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parser": "^3.2.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "groq-sdk": "^1.2.1",
+    "sqlite3": "^6.0.1"
+  }
+}

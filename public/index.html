@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TasteAI — AI-Powered Restaurant Recommendations</title>
+  <meta name="description" content="Get personalized, AI-ranked restaurant recommendations powered by Groq LLM and real Zomato data. Find your perfect meal in Delhi, Mumbai, Bangalore and more.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── TOP NAV ── -->
+  <nav class="top-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-brand">
+      <span class="nav-logo-icon" aria-hidden="true">🍽️✨</span>
+      <span class="nav-logo-text">TasteAI</span>
+    </div>
+
+
+
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
+      <span class="theme-track">
+        <span class="theme-thumb" id="theme-thumb">☀️</span>
+      </span>
+    </button>
+  </nav>
+
+  <!-- ── APP SHELL ── -->
+  <div class="app-shell">
+
+    <!-- ── LEFT SIDEBAR ── -->
+    <aside class="sidebar" aria-label="Filter sidebar">
+
+      <!-- Sidebar Hero -->
+      <div class="sidebar-hero">
+        <h1 class="sidebar-headline">Find your<br>perfect meal.</h1>
+        <p class="sidebar-sub">Tell us what you're craving —<br>our AI does the rest.</p>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="sidebar-nav" aria-label="Sidebar navigation">
+        <a href="#" class="sidebar-link active" id="nav-discovery" aria-current="page">
+          <span class="sidebar-link-icon" aria-hidden="true">🔍</span>
+          <span>Discovery</span>
+        </a>
+      </nav>
+
+      <!-- Active Filters Summary (shown after a search) -->
+      <div class="active-filters-panel hidden" id="active-filters-panel" aria-live="polite">
+        <div class="active-filters-header">
+          <span class="active-filters-title">ACTIVE FILTERS</span>
+          <button class="reset-btn" id="reset-btn" aria-label="Reset filters">Reset</button>
+        </div>
+        <div id="active-filters-body"></div>
+      </div>
+
+      <!-- Filter Form Section Label -->
+      <div class="filter-section-label">FILTERS</div>
+
+      <!-- Glassmorphism Filter Card -->
+      <div class="filter-glass-card">
+        <form id="preferences-form" class="filter-form" novalidate>
+
+          <!-- Location Dropdown -->
+          <div class="form-group">
+            <label for="location-select" class="form-label">
+              Location <span class="required" aria-hidden="true">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="location-select" required aria-required="true">
+                <option value="" disabled selected>Select a city…</option>
+                <!-- Populated by JS from API, with fallbacks -->
+              </select>
+              <span class="select-chevron" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Cuisine Dropdown -->
+          <div class="form-group">
+            <label for="cuisine-select" class="form-label">Cuisine</label>
+            <div class="select-wrapper">
+              <select id="cuisine-select">
+                <option value="">Any Cuisine</option>
+                <!-- Populated by JS from API, with fallbacks -->
+              </select>
+              <span class="select-chevron" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Budget Pills -->
+          <div class="form-group">
+            <span class="form-label" id="budget-label">Budget</span>
+            <div class="pill-group" role="group" aria-labelledby="budget-label">
+              <label class="pill-option">
+                <input type="radio" name="budget" value="" checked> <span>Any</span>
+              </label>
+              <label class="pill-option">
+                <input type="radio" name="budget" value="low"> <span>&lt;₹500</span>
+              </label>
+              <label class="pill-option">
+                <input type="radio" name="budget" value="medium"> <span>₹501-1500</span>
+              </label>
+              <label class="pill-option">
+                <input type="radio" name="budget" value="high"> <span>&gt;₹1500</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Min Rating Pills -->
+          <div class="form-group">
+            <span class="form-label" id="rating-label">Minimum Rating</span>
+            <div class="pill-group" role="group" aria-labelledby="rating-label">
+              <label class="pill-option">
+                <input type="radio" name="minRating" value="0" checked> <span>Any</span>
+              </label>
+              <label class="pill-option">
+                <input type="radio" name="minRating" value="3.5"> <span>⭐ 3.5+</span>
+              </label>
+              <label class="pill-option">
+                <input type="radio" name="minRating" value="4.0"> <span>⭐ 4.0+</span>
+              </label>
+              <label class="pill-option">
+                <input type="radio" name="minRating" value="4.5"> <span>⭐ 4.5+</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div class="form-group">
+            <label for="special-notes" class="form-label">Additional Notes</label>
+            <div class="textarea-wrapper">
+              <textarea
+                id="special-notes"
+                rows="3"
+                maxlength="200"
+                placeholder="e.g. family-friendly, rooftop seating, quick service…"
+                aria-describedby="char-counter"
+              ></textarea>
+              <span class="char-counter" id="char-counter" aria-live="polite">0 / 200</span>
+            </div>
+          </div>
+
+          <!-- CTA Button -->
+          <button type="submit" id="submit-btn" class="cta-btn" aria-label="Find restaurants">
+            <span class="btn-icon" aria-hidden="true">🔍</span>
+            <span class="btn-text">Find Restaurants →</span>
+            <div class="btn-loader hidden" aria-hidden="true">
+              <div class="spinner"></div>
+            </div>
+          </button>
+
+        </form>
+      </div>
+
+    </aside>
+
+    <!-- ── RESULTS PANEL ── -->
+    <main class="results-panel" id="results-panel" aria-label="Recommendation results" aria-live="polite">
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon" aria-hidden="true">🍽️</div>
+        <h2 class="empty-heading">No recommendations yet</h2>
+        <p class="empty-sub">Tell us what you're craving in the sidebar — our AI does the rest.</p>
+        <div class="try-asking-card">
+          <span class="try-asking-icon" aria-hidden="true">✨</span>
+          <div>
+            <span class="try-asking-label">Try asking for:</span>
+            <p class="try-asking-example">"A quiet spot with great pasta and dim lighting, perfect for a date night."</p>
+          </div>
+        </div>
+        <div class="filter-chips-hint">
+          <span class="filter-chip-hint">🍣 Sushi</span>
+          <span class="filter-chip-hint">🍕 Italian</span>
+          <span class="filter-chip-hint">🌶️ Spicy</span>
+          <span class="filter-chip-hint">🌙 Late Night</span>
+        </div>
+      </div>
+
+      <!-- Results Header (hidden until results load) -->
+      <div class="results-header hidden" id="results-header">
+        <div>
+          <h2 class="results-title">Curated Top Picks</h2>
+          <p class="results-sub" id="results-sub">Based on your refined taste profile and real-time availability.</p>
+        </div>
+        <div class="results-meta" id="results-meta"></div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="cards-grid hidden" id="cards-grid"></div>
+
+    </main>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div class="toast hidden" id="toast" role="alert" aria-live="assertive">
+    <span class="toast-icon" aria-hidden="true">❌</span>
+    <span class="toast-msg" id="toast-msg">An error occurred.</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
