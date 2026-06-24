@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { queryRestaurants, getUniqueLocations, getUniqueCuisines } from './db.js';
@@ -12,6 +13,9 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Enable CORS for all origins so the Vercel frontend can connect
+app.use(cors());
 
 // Enable JSON middleware and serve static frontend assets
 app.use(express.json());
