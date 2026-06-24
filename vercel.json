@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "framework": null,
   "installCommand": "echo 'No install'",
   "buildCommand": "echo 'No build'",
   "outputDirectory": "public",
